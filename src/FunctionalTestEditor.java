@@ -15,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class FunctionalTestEditor implements ApplicationComponent, FileEditorProvider {
 
@@ -30,7 +32,6 @@ public class FunctionalTestEditor implements ApplicationComponent, FileEditorPro
     }
 
     public boolean accept(Project project, VirtualFile file) {
-        System.out.println("monplugindetestf");
         return file.getFileType() == StdFileTypes.XML;
     }
 
@@ -81,7 +82,16 @@ public class FunctionalTestEditor implements ApplicationComponent, FileEditorPro
             mainPanel = new JPanel(new BorderLayout());
 
 
-            mainPanel.add(new Label("mon editeur de tests f"));
+            String str = "Fail to read Content";
+            try {
+
+                byte[] bytes = file.contentsToByteArray();
+
+                str = new String(bytes, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mainPanel.add(new Label("mon editeur de tests f : /n"+str));
             FileEditorManager.getInstance(project).addFileEditorManagerListener(this);
         }
 
